@@ -3,33 +3,45 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
-        padding: 8,
-        background: `${theme.palette.secondary.dark}a6`,
-        border: `1px solid ${theme.palette.border.input}`,
-        marginBottom: 4,
-        minWidth: 200,
+        padding: '7px 10px',
+        background: 'rgba(10, 18, 18, 0.75)',
+        border: `1px solid rgba(0, 201, 177, 0.14)`,
+        borderLeft: `2px solid #b06cf5`,
+        marginBottom: 2,
+        minWidth: 160,
         width: 'fit-content',
+        maxWidth: '100%',
         height: 'fit-content',
         borderRadius: 4,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.3)',
+        animation: '$msgIn 0.18s ease',
+    },
+    '@keyframes msgIn': {
+        '0%': { opacity: 0, transform: 'translateX(-6px)' },
+        '100%': { opacity: 1, transform: 'translateX(0)' },
     },
     author: {
         color: theme.palette.text.alt,
-        borderBottom: `1px solid ${theme.palette.border.divider}`,
-        marginBottom: 5,
-        paddingBottom: 5,
-
+        fontSize: '0.78em',
+        borderBottom: `1px solid rgba(0,201,177,0.1)`,
+        marginBottom: 4,
+        paddingBottom: 4,
         '& small': {
-            marginLeft: 4,
+            marginLeft: 5,
+            opacity: 0.6,
         },
     },
     tag: {
-        color: '#C274FC',
+        color: '#b06cf5',
+        fontWeight: 600,
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
     },
     content: {
-        marginLeft: 6,
-        padding: 4,
-        fontSize: '90%',
-        textShadow: '0 0 #000',
+        paddingLeft: 2,
+        fontSize: '0.88em',
+        color: theme.palette.text.main,
+        lineHeight: 1.45,
     },
 }));
 
@@ -39,16 +51,14 @@ export default ({ message }) => {
         <div className={classes.wrapper}>
             {Boolean(message.author.Anonymous) ? (
                 <div className={classes.author}>
-                    <span className={classes.tag}>[311 Anonymous]</span>
+                    <span className={classes.tag}>[311 ANON]</span>
                     {Boolean(message.author.SID) && (
                         <small>({message.author.SID})</small>
                     )}
                 </div>
             ) : Boolean(message.author.Reply) ? (
                 <div className={classes.author}>
-                    <span className={classes.tag}>
-                        [311r -&gt; {message.author.Reply}]
-                    </span>{' '}
+                    <span className={classes.tag}>[311r → {message.author.Reply}]</span>{' '}
                     {message.author.First} {message.author.Last}
                     <small>({message.author.SID})</small>
                 </div>
@@ -56,9 +66,7 @@ export default ({ message }) => {
                 <div className={classes.author}>
                     <span className={classes.tag}>[311]</span>{' '}
                     {message.author.First} {message.author.Last}
-                    <small>
-                        ({message.author.SID} - {message.author.Phone})
-                    </small>
+                    <small>({message.author.SID} · {message.author.Phone})</small>
                 </div>
             )}
             <div className={classes.content}>{message.message}</div>

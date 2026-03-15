@@ -7,34 +7,57 @@ import Nui from '../../util/Nui';
 import Suggestion from './components/Suggestion';
 
 const useStyles = makeStyles((theme) => ({
-    wrapper: {
+    container: {
         fontSize: '1.65vh',
         position: 'absolute',
-        top: 'calc(26% + 25px)',
-        left: 25,
-        width: '30%',
+        top: 'calc(29% + 20px)',
+        left: 20,
+        width: '28%',
         maxWidth: 1000,
         boxSizing: 'border-box',
-        border: `1px solid ${theme.palette.border.input}`,
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    wrapper: {
+        boxSizing: 'border-box',
+        borderRadius: '6px 6px 0 0',
+        overflow: 'hidden',
+        background: 'rgba(10, 18, 18, 0.82)',
+        border: `1px solid rgba(0, 201, 177, 0.22)`,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,201,177,0.06)',
+    },
+    wrapperOnly: {
+        boxSizing: 'border-box',
+        borderRadius: 6,
+        overflow: 'hidden',
+        background: 'rgba(10, 18, 18, 0.82)',
+        border: `1px solid rgba(0, 201, 177, 0.22)`,
+        boxShadow: '0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,201,177,0.06)',
     },
     input: {
         position: 'relative',
         display: 'flex',
         alignItems: 'stretch',
         width: '100%',
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: 'rgba(10, 18, 18, 0.82)',
+        borderLeft: `2px solid ${theme.palette.primary.main}`,
     },
     prefix: {
-        fontSize: '1.6vh',
+        fontSize: '1.55vh',
         height: '100%',
         verticalAlign: 'middle',
         lineHeight: 'calc(1vh + 1vh + 1.85vh)',
-        paddingLeft: '0.5vh',
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        display: 'inline-block',
+        paddingLeft: '0.6vh',
+        paddingRight: '0.2vh',
+        color: theme.palette.primary.main,
+        display: 'inline-flex',
+        alignItems: 'center',
+        opacity: 0.9,
     },
     textarea: {
+        fontFamily: 'Rajdhani, sans-serif',
+        fontWeight: 500,
+        letterSpacing: '0.02em',
         fontSize: '1.35vh',
         lineHeight: '1.85vh',
         display: 'block',
@@ -42,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
         padding: '1vh',
         paddingLeft: '0.5vh',
         color: theme.palette.text.main,
+        caretColor: theme.palette.primary.main,
         borderWidth: 0,
         height: '3.15%',
         overflow: 'hidden',
@@ -51,16 +75,14 @@ const useStyles = makeStyles((theme) => ({
         resize: 'none',
     },
     suggestionsWrapper: {
-        fontSize: 16,
-        position: 'absolute',
-        top: 'calc(30% + 25px)',
-        left: 25,
-        width: '30%',
-        maxWidth: 1000,
-        boxSizing: 'border-box',
-        border: `1px solid ${theme.palette.border.input}`,
+        fontSize: 15,
+        border: `1px solid rgba(0, 201, 177, 0.16)`,
         borderTop: 'none',
-        backgroundColor: theme.palette.secondary.dark,
+        borderRadius: '0 0 6px 6px',
+        background: 'rgba(8, 15, 15, 0.9)',
+        boxSizing: 'border-box',
+        width: '100%',
+        padding: 0,
     },
 }));
 
@@ -83,7 +105,6 @@ export default () => {
 
     useEffect(() => {
         if (!hidden) inputRef.current.focus();
-        //else inputRef.current.blur();
     }, [hidden]);
 
     useEffect(() => {
@@ -101,9 +122,7 @@ export default () => {
         else setValue('');
     }, [history]);
 
-    const onChange = (e) => {
-        setValue(e.target.value);
-    };
+    const onChange = (e) => { setValue(e.target.value); };
 
     const onBlur = (e) => {
         e.preventDefault();
@@ -115,54 +134,25 @@ export default () => {
         if (e.which == 13) {
             e.preventDefault();
             if (value != '') {
-                dispatch({
-                    type: 'ON_SUBMIT',
-                    payload: {
-                        message: value,
-                    },
-                });
+                dispatch({ type: 'ON_SUBMIT', payload: { message: value } });
                 Nui.send('chatResult', { message: value });
-                dispatch({
-                    type: 'ON_SCREEN_STATE_CHANGE',
-                    payload: {
-                        shouldHide: true,
-                        inputting: false,
-                    },
-                });
+                dispatch({ type: 'ON_SCREEN_STATE_CHANGE', payload: { shouldHide: true, inputting: false } });
                 setValue('');
-            } else if (value == '') {
-                dispatch({
-                    type: 'ON_SCREEN_STATE_CHANGE',
-                    payload: {
-                        shouldHide: true,
-                        inputting: false,
-                    },
-                });
+            } else {
+                dispatch({ type: 'ON_SCREEN_STATE_CHANGE', payload: { shouldHide: true, inputting: false } });
                 Nui.send('chatResult', { cancelled: true });
                 setHistory(0);
                 setValue('');
             }
         } else if (e.which == 9) {
             e.preventDefault();
-            if (isCommand && showSuggs.length > 0) {
-                setValue(`${showSuggs[0].name} `);
-            }
+            if (isCommand && showSuggs.length > 0) setValue(`${showSuggs[0].name} `);
         } else if (e.which == 27) {
-            dispatch({
-                type: 'ON_SCREEN_STATE_CHANGE',
-                payload: {
-                    shouldHide: true,
-                    inputting: false,
-                },
-            });
+            dispatch({ type: 'ON_SCREEN_STATE_CHANGE', payload: { shouldHide: true, inputting: false } });
             Nui.send('chatResult', { cancelled: true });
             setHistory(0);
             setValue('');
-        } else if (
-            e.code == 'ArrowUp' &&
-            inputs.length > 0 &&
-            history + 1 <= inputs.length
-        ) {
+        } else if (e.code == 'ArrowUp' && inputs.length > 0 && history + 1 <= inputs.length) {
             setHistory(history + 1);
         } else if (e.code == 'ArrowDown' && inputs.length > 0 && history > 0) {
             setHistory(history - 1);
@@ -170,15 +160,10 @@ export default () => {
     };
 
     return (
-        <div>
-            <div className={classes.wrapper}>
+        <div className={classes.container}>
+            <div className={isCommand ? classes.wrapper : classes.wrapperOnly}>
                 <div className={classes.input}>
-                    <span
-                        className={classes.prefix}
-                        style={{ color: 'rgb(255, 255, 255)' }}
-                    >
-                        ➤
-                    </span>{' '}
+                    <span className={classes.prefix}>›</span>
                     <textarea
                         className={classes.textarea}
                         type="text"
@@ -190,7 +175,7 @@ export default () => {
                         onKeyDown={onKeyDown}
                         onChange={onChange}
                         onBlur={onBlur}
-                    ></textarea>
+                    />
                 </div>
             </div>
             {isCommand && (
@@ -199,24 +184,14 @@ export default () => {
                         showSuggs
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .slice(0, 6)
-                            .map((sugg, i) => {
-                                if (i == 0) {
-                                    return (
-                                        <Suggestion
-                                            isFirst
-                                            suggestion={sugg}
-                                            parameterIndex={currentParamIndex}
-                                        />
-                                    );
-                                } else {
-                                    return (
-                                        <Suggestion
-                                            suggestion={sugg}
-                                            parameterIndex={currentParamIndex}
-                                        />
-                                    );
-                                }
-                            })
+                            .map((sugg, i) => (
+                                <Suggestion
+                                    key={i}
+                                    isFirst={i === 0}
+                                    suggestion={sugg}
+                                    parameterIndex={currentParamIndex}
+                                />
+                            ))
                     ) : (
                         <ListItem dense>
                             <ListItemText primary="No Matching Commands" />

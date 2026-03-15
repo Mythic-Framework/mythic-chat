@@ -15,27 +15,19 @@ const useStyles = makeStyles((theme) => ({
     },
     messages: {
         position: 'absolute',
-        top: 25,
-        left: 25,
-        height: '25%',
-        width: '30vw',
-        paddingTop: 10,
-        // background: `${theme.palette.secondary.dark}a6`,
-        // border: `1px solid ${theme.palette.border.input}`,
-        // borderBottom: 'none',
-
-        // '&.hiding': {
-        //     borderBottom: `1px solid ${theme.palette.border.input}`,
-        // },
+        top: 20,
+        left: 20,
+        height: '28%',
+        width: '28vw',
+        paddingTop: 6,
     },
     inner: {
         maxHeight: '100%',
         height: '100%',
         display: 'flex',
-        flexFlow: 'row',
+        flexFlow: 'column',
         overflow: 'auto',
-        flexWrap: 'wrap',
-        gap: '1%',
+        gap: 2,
         alignContent: 'flex-start',
 
         '&::-webkit-scrollbar': {
@@ -57,11 +49,7 @@ export default () => {
 
     useEffect(() => {
         if (hidden && showing) {
-            setTo(
-                setTimeout(() => {
-                    setShowing(false);
-                }, 2500),
-            );
+            setTo(setTimeout(() => { setShowing(false); }, 2500));
         } else if (!hidden && Boolean(to)) {
             if (!showing) setShowing(true);
             clearTimeout(to);
@@ -73,39 +61,23 @@ export default () => {
 
     useEffect(() => {
         if (!hidden) return;
-
         if (hidden) {
             setPreviewing(true);
             if (!Boolean(to2)) clearTimeout(to2);
-            setTo2(
-                setTimeout(() => {
-                    setPreviewing(false);
-                }, 6000),
-            );
+            setTo2(setTimeout(() => { setPreviewing(false); }, 6000));
         }
     }, [messages]);
 
     return (
         <div className={classes.wrapper}>
-            <Slide
-                direction="down"
-                in={showing || previewing}
-                mountOnEnter
-                unmountOnExit
-            >
-                <div
-                    className={`${classes.messages}${
-                        hidden && showing ? ' hiding' : ''
-                    }`}
-                >
+            <Slide direction="right" in={showing || previewing} mountOnEnter unmountOnExit>
+                <div className={`${classes.messages}${hidden && showing ? ' hiding' : ''}`}>
                     <ScrollableFeed className={classes.inner}>
                         {messages
                             .sort((a, b) => a.time - b.time)
-                            .map((msg, i) => {
-                                return (
-                                    <Message key={`msg-${i}`} message={msg} />
-                                );
-                            })}
+                            .map((msg, i) => (
+                                <Message key={`msg-${i}`} message={msg} />
+                            ))}
                     </ScrollableFeed>
                 </div>
             </Slide>
