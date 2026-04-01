@@ -6,6 +6,7 @@ function RetrieveComponents()
 	Jobs = exports["mythic-base"]:FetchComponent("Jobs")
 	Logger = exports["mythic-base"]:FetchComponent("Logger")
 	EmergencyAlerts = exports["mythic-base"]:FetchComponent("EmergencyAlerts")
+	Version = exports["mythic-base"]:FetchComponent("Version")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -16,6 +17,7 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jobs",
 		"Logger",
 		"EmergencyAlerts",
+		"Version",
 	}, function(error)
 		if #error > 0 then
 			return
@@ -34,6 +36,8 @@ AddEventHandler("Core:Shared:Ready", function()
 			help = "Let People Know What You are Doing",
 			params = {},
 		}, -1)
+
+		Version:Check('Mythic-Framework/Mythic-VersionCheckers', GetCurrentResourceName())
 	end)
 end)
 
