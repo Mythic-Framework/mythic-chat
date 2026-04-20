@@ -7,8 +7,8 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
-                          Last: 'Ducky',
+                          First: 'Artmines',
+                          Last: 'MySQL',
                           SID: 1,
                       },
                   },
@@ -17,8 +17,8 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
-                          Last: 'Ducky',
+                          First: 'Artmines',
+                          Last: 'MySQL',
                           SID: 1,
                       },
                   },
@@ -32,8 +32,8 @@ export const initialState = {
                       type: 'ooc',
                       message: 'TEST',
                       author: {
-                          First: 'Fucky',
-                          Last: 'Ducky',
+                          First: 'Artmines',
+                          Last: 'MySQL',
                           SID: 1,
                       },
                   },
@@ -69,7 +69,7 @@ export const initialState = {
             : Array(),
     inputs:
         process.env.NODE_ENV != 'production'
-            ? Array('/ooc TEST', '/m0', '/911a "FUCK YOU CUNT LOL"')
+            ? Array('/ooc TEST', '/m0', '/911a "Test message 911."')
             : Array(),
 };
 
